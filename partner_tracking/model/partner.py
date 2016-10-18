@@ -11,12 +11,12 @@ class ResPartner(orm.Model):
     _inherit = ['res.partner']
 
     _columns = {
-        'name': fields.boolean('Lock Partner',
+        'lock': fields.boolean('Lock Partner',
                                help='Users cannot modify this partner'),
     }
 
     _track = {
-        'lock': {
+        'name': {
         },
     }
 

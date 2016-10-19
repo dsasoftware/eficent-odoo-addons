@@ -36,9 +36,12 @@ class AccountsWithContractValue(orm.TransientModel):
             cr, uid, analytic_ids, context=context)
 
         for acc_id in accs.keys():
-                for ch_acc in analytic_obj.browse(cr, uid, accs[acc_id].keys(),
-                                                  context=context):
-                    items += self._prepare_item(cr, uid, ch_acc,
+                for ch_acc in [account for account in self.pool.get(
+                        'account.analytic.account').get_child_accounts(
+                                 cr, uid, [acc_id], context)]:
+                    items += self._prepare_item(cr, uid, analytic_obj.browse(
+                                                cr, uid, ch_acc,
+                                                context=context),
                                                 context=context)
         res['item_ids'] = items
 

@@ -8,7 +8,7 @@
                 <form string="Accounts with Contract Value" version="7.0">
                     <group>
                         <field name="item_ids" nolabel="1">
-                            <tree>
+                            <tree create="0">
                                 <field name="account_id"/>
                                 <field name="contract_value"/>
                             </tree>

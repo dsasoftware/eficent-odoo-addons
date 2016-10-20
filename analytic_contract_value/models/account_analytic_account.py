@@ -38,25 +38,6 @@ class AccountAnalyticAccount(orm.Model):
             context = {}
         res = {}
         for curr_id in ids:
-            # all_acc = []
-            # res[curr_id] = {}
-            # # Now add the children
-            # cr.execute('''
-            # WITH RECURSIVE children AS (
-            # SELECT parent_id, id
-            # FROM account_analytic_account
-            # WHERE parent_id = %s
-            # UNION ALL
-            # SELECT a.parent_id, a.id
-            # FROM account_analytic_account a
-            # JOIN children b ON(a.parent_id = b.id)
-            # )
-            # SELECT * FROM children order by parent_id
-            # ''', (curr_id,))
-            # cr_res = cr.fetchall()
-            # for x, y in cr_res:
-            #     all_acc.append(y)
-            # all_acc.append(curr_id)
             all_acc = [account for account in self.get_child_accounts(
                 cr, uid, [curr_id], context)]
 
@@ -69,20 +50,14 @@ class AccountAnalyticAccount(orm.Model):
 
     def _total_contract_value_calc(self, cr, uid, ids, prop, unknow_none,
                                    unknow_dict):
-        res = {}
         res = self.list_accounts_with_contract_value(cr, uid, ids,
                                                           context=None)
-        # for acc_id in acc_list.keys():
-        #     res[acc_id] = 0.0
-        #     for ch_acc_id in acc_list[acc_id]:
-        #         res[acc_id] += acc_list[acc_id][ch_acc_id]
         return res
 
     def _original_contract_value_calc(self, cr, uid, ids, prop, unknow_none,
                                    unknow_dict):
         return self.list_lines_with_contract_value(cr, uid, ids,
                                                           context=None)
-
 
     _columns = {
         'contract_value': fields.function(

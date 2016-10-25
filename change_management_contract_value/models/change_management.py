@@ -61,12 +61,12 @@ class ChangeManagementChange(orm.Model):
                                            context=None):
 
         return {
-            'account_id': obj.change_project_id.id,
+            'account_id': obj.change_project_id.analytic_account_id.id,
             'name': obj.project_id.name,
             'date': obj.date_registered,
             'currency_id': template_id.currency_id.id,
             'user_id': uid,
-            'company_id': obj.project_id.company_id.id,
+            'company_id': obj.change_project_id.company_id.id,
             'version_id': template_id.version_id.id
         }
 
@@ -141,7 +141,7 @@ class ChangeManagementChange(orm.Model):
         for obj in self.browse(cr, uid, ids, context=context):
             change = obj
         plan_lines = self.pool.get('account.analytic.account').\
-            list_accounts_with_contract_value(cr, uid, [change.project_id.id],
+            list_accounts_with_contract_value(cr, uid, [change.change_project_id.id],
                                               context)
         analytic_line_plan_obj = self.pool['account.analytic.line.plan']
 

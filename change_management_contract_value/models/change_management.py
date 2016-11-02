@@ -24,9 +24,6 @@ class ChangeManagementChange(orm.Model):
                                      readonly=True,
                                      help="Value of the Change",
                                      states={'draft': [('readonly', False)]}),
-        'template_id': fields.many2one('analytic.plan.mass.create.template',
-                                       'Template', required=True,
-                                       ondelete='cascade'),
         'line_ids': fields.one2many('account.analytic.line.plan',
                                     'change_id', 'Lines'),
     }
@@ -144,10 +141,11 @@ class ChangeManagementChange(orm.Model):
             list_accounts_with_contract_value(cr, uid, [change.change_project_id.id],
                                               context)
         analytic_line_plan_obj = self.pool['account.analytic.line.plan']
+        template_id = change.project_id.company_id.template_id
 
-        # template_id = self.pool.get('analytic.plan.mass.create.template').\
-        #     browse(cr, uid, 1, context)
-        template_id = change.template_id
+        if not template_id:
+            raise orm.except_orm(_("Error!"),
+                                 _("No template is defined for this company"))
 
         for item in plan_lines:
             common = self._prepare_analytic_line_plan_common(

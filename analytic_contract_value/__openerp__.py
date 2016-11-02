@@ -10,13 +10,12 @@
     "author": "Eficent",
     "website": "http://www.eficent.com",
     "category": "Generic",
-    "depends": ["analytic"],
+    "depends": ["analytic", "analytic_plan", "analytic_plan_mass_create"],
     "license": "AGPL-3",
     "data": [
         "security/analytic_security.xml",
         "wizards/accounts_with_contract_value_view.xml",
         "views/analytic_account_view.xml",
-
     ],
     'installable': True,
     'active': False,

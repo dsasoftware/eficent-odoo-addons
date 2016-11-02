@@ -14,6 +14,7 @@
     'depends': ['change_management_own_project', 'analytic_contract_value'],
     'data': [
         'views/change_management_view.xml',
+        'views/company_view.xml',
     ],
     'installable': True,
     'application': True,

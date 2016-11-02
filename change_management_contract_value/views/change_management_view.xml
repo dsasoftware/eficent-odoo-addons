@@ -10,9 +10,6 @@
                 <field name="change_category_id" position="after">
                     <field name="change_value"/>
                 </field>
-                <field name="date_registered" position="after">
-                    <field name="template_id"/>
-                </field>
             </field>
         </record>
 

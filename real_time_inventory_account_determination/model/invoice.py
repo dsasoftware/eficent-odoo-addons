@@ -38,7 +38,11 @@ class account_invoice_line(orm.Model):
             or line.product_id.valuation != 'real_time'
         ):
             return res
-        if line.move_line_ids:
+        is_drop_ship = False
+        for move in line.move_line_ids:
+            if move.location_dest_id.usage != 'internal':
+                is_drop_ship = True
+        if line.move_line_ids and not is_drop_ship:
             for move in line.move_line_ids:
                 qty = uom_obj._compute_qty(cr, uid, move.product_uom.id,
                                            move.product_qty,
@@ -69,11 +73,16 @@ class account_invoice_line(orm.Model):
 
         if inv.type in ('in_invoice', 'in_refund'):
             for i_line in inv.invoice_line:
+                is_drop_ship = False
+                for move in i_line.move_line_ids:
+                    if move.location_dest_id.usage != 'internal':
+                        is_drop_ship = True
                 if (
                     i_line.product_id
                     and i_line.product_id.valuation == 'real_time'
                     and i_line.product_id.type != 'service'
                     and i_line.move_line_ids
+                    and not is_drop_ship
                 ):
                     # get the price difference account at the product
                     acc = i_line.product_id.\

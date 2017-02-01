@@ -23,7 +23,7 @@
             <field name="arch" type="xml">
                 <field name="analytic_account_id" position="attributes">
                     <attribute name="attrs">{'invisible':[('analytic_inventory', '=', False)]}</attribute>
-                    <attribute name="required">[('amount_select','=','percentage')]</attribute>
+                    <attribute name="required">[('analytic_inventory','=','True')]</attribute>
                 </field>
             </field>
         </record>

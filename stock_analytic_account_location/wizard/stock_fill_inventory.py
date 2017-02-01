@@ -48,14 +48,19 @@ class StockFillInventory(orm.Model):
             location_ids = [fill_inventory.location_id.id]
 
         if fill_inventory.analytic_inventory:
-            location_ids = location_obj.search(
-                cr, uid, [('analytic_account_id', '=',
-                           [fill_inventory.analytic_account_id.id])], order="id",
-                context=context)
             analytic_account_id = fill_inventory.analytic_account_id.id
+            analytic_ids = [analytic_account_id]
             if fill_inventory.recursive:
-                children_loc = self.pool.get('stock.location')._get_sublocations(cr, uid, location_ids)
-                location_ids.extend(children_loc)
+                account = fill_inventory.analytic_account_id
+                child_ids = [child.id for child in account.child_ids]
+                analytic_ids.extend(child_ids)
+            location_ids = location_obj.search(
+                cr, uid, [('analytic_account_id', 'in', analytic_ids)],
+                order="id", context=context)
+            ch_location_ids = self.pool.get(
+                'stock.location')._get_sublocations(cr, uid, location_ids)
+            location_ids.extend(ch_location_ids)
+
             location_ids = list(set(location_ids))
         else:
             analytic_account_id = False

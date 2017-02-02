@@ -5,7 +5,7 @@
             <field name="company_id" ref="base.main_company"/>
             <field name="usage">view</field>
             <field name="chained_location_type">none</field>
-            <field name="company_id">none</field>
+            <field name="company_id"></field>
             <field eval="1" name="active"/>
             <field name="name">Projects External Location</field>
             <field name="chained_auto_packing">manual</field>

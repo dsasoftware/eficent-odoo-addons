@@ -18,7 +18,7 @@ class PurchaseOrderLine(orm.Model):
                     raise orm.except_orm(
                         _('Error'),
                         _('The analytic account in the location and in the '
-                          'destiantion location and PO line have to match')
+                          'destination location and PO line have to match')
                     )
         return super(PurchaseOrderLine, self).action_confirm(cr, uid, ids,
                                                              context)

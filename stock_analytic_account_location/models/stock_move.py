@@ -43,23 +43,22 @@ class StockMove(orm.Model):
             src_loc = move.location_id
             dest_loc = move.location_dest_id
             if src_loc.analytic_account_id and dest_loc.analytic_account_id:
-                if (src_loc.usage == 'customer'and dest_loc.usage ==
+                if (src_loc.usage == 'customer' and dest_loc.usage ==
                     'internal') or (src_loc.usage == 'internal' and
-                       dest_loc.usage == 'customer'):
+                                            dest_loc.usage == 'customer'):
                     add_analytic_id = dest_loc.analytic_account_id.id
             if src_loc.analytic_account_id and not dest_loc.analytic_account_id:
-                if (src_loc.usage == 'internal' and
-                    dest_loc.usage != 'internal') or \
-                    (src_loc.usage == 'customer' and
-                     dest_loc.usage == 'internal'):
+                if ((src_loc.usage == 'internal' and
+                             dest_loc.usage != 'internal')) or (
+                        (src_loc.usage == 'customer' and
+                                 dest_loc.usage == 'internal')):
                     add_analytic_id = src_loc.analytic_account_id.id
             if not src_loc.analytic_account_id and dest_loc.analytic_account_id:
-                if (src_loc.usage in ('internal', 'supplier') and \
-                                dest_loc.usage != 'internal') or \
-                    (src_loc.usage == 'customer' and
-                     dest_loc.usage == 'internal'):
+                if src_loc.usage == 'supplier':
                     add_analytic_id = dest_loc.analytic_account_id.id
-            if add_analytic_id:
+                if src_loc.usage in ('inventory', 'customer') and \
+                                dest_loc.usage == 'internal':
+                    add_analytic_id = dest_loc.analytic_account_id.id
                 vals['analytic_account_id'] = add_analytic_id
         return super(StockMove, self).write(
             cr, uid, ids, vals, context=context)

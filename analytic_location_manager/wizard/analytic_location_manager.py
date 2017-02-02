@@ -13,12 +13,15 @@ class LocationAnalyticCreate(orm.TransientModel):
     def _prepare_location(self, cr, uid, wizard, context=None):
         if context is None:
             context = {}
-        return {
+        res = {
             'name': wizard.name,
             'location_id': wizard.location_id.id,
             'type': 'internal' if wizard.type == 'internal' else 'customer',
             'analytic_account_id': context['default_analytic_account_id'],
         }
+        if wizard.type == 'external':
+            res.update(company_id=False)
+        return  res
 
     def create_location(self, cr, uid, ids, context=None):
         if context is None:

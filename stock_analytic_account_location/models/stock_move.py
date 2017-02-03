@@ -28,6 +28,8 @@ class StockMove(orm.Model):
         if not src_loc.analytic_account_id and dest_loc.analytic_account_id:
             if src_loc.usage == 'supplier':
                 add_analytic_id = dest_loc.analytic_account_id.id
+            if dest_loc.usage == 'customer' and src_loc != 'customer':
+                add_analytic_id = dest_loc.analytic_account_id.id
             if src_loc.usage in ('inventory', 'customer') and \
                  dest_loc.usage == 'internal':
                 add_analytic_id = dest_loc.analytic_account_id.id

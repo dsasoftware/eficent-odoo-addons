@@ -224,7 +224,7 @@ class AnalyticResourcePlanLine(orm.Model):
                 if qty_fetched < line.unit_amount:
                     qty_available = self._get_product_available(
                         cr, uid, ids, location.id, context)[line.id]
-                    if qty_available:
+                    if qty_available > 0:
                         picking = self._prepare_picking_vals(
                             cr, uid, ids, context)
                         picking_id = self.pool.get('stock.picking').create(

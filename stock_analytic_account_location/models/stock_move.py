@@ -40,45 +40,45 @@ class StockMove(orm.Model):
 
     def write(self, cr, uid, ids, vals, context=None):
         check_analytic = False
-        if 'location_id' in vals:
-            src_loc = self.pool.get('stock.location').browse(
-                cr, uid, vals['location_id'])
-            check_analytic = True
-        else:
-            src_loc = self.pool.get('stock.move').browse(cr, uid, ids[0]).location_id
+        for move in self.pool.get('stock.move').browse(cr, uid, ids, context):
+            if 'location_id' in vals:
+                move.browse(cr, uid, vals['location_id'])
+                check_analytic = True
+            else:
+                src_loc = move.location_id.id
 
-        if 'location_dest_id' in vals:
-            dest_loc = self.pool.get('stock.location').browse(
-                cr, uid, vals['location_dest_id'])
-            check_analytic = True
-        else:
-            dest_loc = self.pool.get('stock.move').browse(cr, uid, ids[0]).location_dest_id
+            if 'location_dest_id' in vals:
+                dest_loc = self.pool.get('stock.location').browse(
+                    cr, uid, vals['location_dest_id'])
+                check_analytic = True
+            else:
+                dest_loc = move.location_dest_id.id
 
-        if check_analytic:
-            add_analytic_id = False
-            if src_loc.analytic_account_id and dest_loc.analytic_account_id:
-                if (src_loc.usage == 'customer' and dest_loc.usage ==
-                    'internal') or (src_loc.usage == 'internal' and
-                                            dest_loc.usage == 'customer'):
-                    add_analytic_id = dest_loc.analytic_account_id.id
-            if src_loc.analytic_account_id and not dest_loc.analytic_account_id:
-                if ((src_loc.usage == 'internal' and
-                             dest_loc.usage != 'internal')) or (
-                        (src_loc.usage == 'customer' and
-                                 dest_loc.usage == 'internal')):
-                    add_analytic_id = src_loc.analytic_account_id.id
-            if not src_loc.analytic_account_id and dest_loc.analytic_account_id:
-                if src_loc.usage == 'supplier':
-                    add_analytic_id = dest_loc.analytic_account_id.id
-                if dest_loc.usage == 'customer' and src_loc != 'customer':
-                    add_analytic_id = dest_loc.analytic_account_id.id
-                if src_loc.usage in ('inventory', 'customer') and \
-                                dest_loc.usage == 'internal':
-                    add_analytic_id = dest_loc.analytic_account_id.id
-            if add_analytic_id:
-                vals['analytic_account_id'] = add_analytic_id
-            return super(StockMove, self).write(
-                cr, uid, ids, vals, context=context)
+            if check_analytic:
+                add_analytic_id = False
+                if src_loc.analytic_account_id and dest_loc.analytic_account_id:
+                    if (src_loc.usage == 'customer' and dest_loc.usage ==
+                        'internal') or (src_loc.usage == 'internal' and
+                                                dest_loc.usage == 'customer'):
+                        add_analytic_id = dest_loc.analytic_account_id.id
+                if src_loc.analytic_account_id and not dest_loc.analytic_account_id:
+                    if ((src_loc.usage == 'internal' and
+                                 dest_loc.usage != 'internal')) or (
+                            (src_loc.usage == 'customer' and
+                                     dest_loc.usage == 'internal')):
+                        add_analytic_id = src_loc.analytic_account_id.id
+                if not src_loc.analytic_account_id and dest_loc.analytic_account_id:
+                    if src_loc.usage == 'supplier':
+                        add_analytic_id = dest_loc.analytic_account_id.id
+                    if dest_loc.usage == 'customer' and src_loc != 'customer':
+                        add_analytic_id = dest_loc.analytic_account_id.id
+                    if src_loc.usage in ('inventory', 'customer') and \
+                                    dest_loc.usage == 'internal':
+                        add_analytic_id = dest_loc.analytic_account_id.id
+                if add_analytic_id:
+                    vals['analytic_account_id'] = add_analytic_id
+        return super(StockMove, self).write(
+            cr, uid, ids, vals, context=context)
 
     def _check_analytic_account(self, cr, uid, ids, context=None):
         for move in self.browse(cr, uid, ids):

@@ -191,8 +191,6 @@ class AnalyticResourcePlanLine(orm.Model):
         return res
 
     def action_button_confirm(self, cr, uid, ids, context=None):
-        res = super(AnalyticResourcePlanLine, self).action_button_confirm(
-            cr, uid, ids, context=context)
         to_purchase = []
         for line in self.browse(cr, uid, ids, context=context):
             if not line.account_id.warehouse_id:
@@ -242,7 +240,8 @@ class AnalyticResourcePlanLine(orm.Model):
             if len(to_purchase) > 0:
                 self._make_auto_purchase_request(cr, uid, to_purchase,
                                                  context)
-        return res
+        return super(AnalyticResourcePlanLine, self).action_button_confirm(
+            cr, uid, ids, context=context)
 
     def unlink(self, cr, uid, ids, context=None):
         for line in self.browse(cr, uid, ids, context=context):
